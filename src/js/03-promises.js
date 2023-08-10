@@ -7,42 +7,37 @@ const refs = {
   stepInput: document.querySelector('input[name="step"]'),
 };
 
-let amount = 0;
-let intervalId = null;
-let position = 1;
+let timeoutlId = null;
 
 refs.submitBtn.addEventListener('click', startPromise);
 
 function startPromise(evt) {
   evt.preventDefault();
-  amount = Number(refs.amountInput.value);
-  console.log('Amount of promises: ', amount);
+  const amount = Number(refs.amountInput.value);
   let delay = Number(refs.delayInput.value);
   const step = Number(refs.stepInput.value);
-  console.log('Step = ', step);
-  console.log('Delay = ', delay);
-  
 
-  if (position > amount) {
-    clearTimeout(intervalId);
-    return Notiflix.Notify.info(`All promises have used up!`);
-  } else {
-    intervalId = setTimeout(() => {
+  for (let position = 1; position <= amount; position += 1) {
+    setTimeout(() => {
       createPromise(position, delay)
         .then(({ position, delay }) => {
-          console.log('Position = ', position);
-          console.log('Inside the interval');
-          Notiflix.Notify.info(`✅ Fulfilled promise ${position} in ${delay}ms`);
+          Notiflix.Notify.info(
+            `✅ Fulfilled promise ${position} in ${delay}ms`
+          );
+          // delay += step;
         })
         .catch(({ position, delay }) => {
-          Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
-        });         
+          Notiflix.Notify.failure(
+            `❌ Rejected promise ${position} in ${delay}ms`
+          );
+          // delay += step;
+        })
+        .finally(() => {
+          delay += step;
+        });
     }, delay);
-    
+    // delay = delay + step;
   }
-  delay += step;
-    position += 1;
-    console.log('Delay inside the timeout', delay);
 }
 
 function createPromise(position, delay) {
