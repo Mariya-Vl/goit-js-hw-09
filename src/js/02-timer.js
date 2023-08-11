@@ -18,7 +18,7 @@ refs.startBtn.setAttribute('disabled', true);
 flatpickr('#datetime-picker', {
   enableTime: true,
   time_24hr: true,
-  // defaultDate: new Date(),
+  defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
     if (selectedDates[0] < Date.now()) {

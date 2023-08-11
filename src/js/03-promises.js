@@ -18,36 +18,30 @@ function startPromise(evt) {
   const step = Number(refs.stepInput.value);
 
   for (let position = 1; position <= amount; position += 1) {
-    setTimeout(() => {
-      createPromise(position, delay)
-        .then(({ position, delay }) => {
-          Notiflix.Notify.info(
-            `✅ Fulfilled promise ${position} in ${delay}ms`
-          );
-          // delay += step;
-        })
-        .catch(({ position, delay }) => {
-          Notiflix.Notify.failure(
-            `❌ Rejected promise ${position} in ${delay}ms`
-          );
-          // delay += step;
-        })
-        .finally(() => {
-          delay += step;
-        });
-    }, delay);
-    // delay = delay + step;
+    const delayAll = delay + step * (position - 1);
+    // console.log(delayAll);
+    createPromise(position, delayAll)
+      .then(({ position, delay }) => {
+        Notiflix.Notify.info(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      })
+      .catch(({ position, delay }) => {
+        Notiflix.Notify.failure(
+          `❌ Rejected promise ${position} in ${delay}ms`
+        );
+      });
   }
 }
 
 function createPromise(position, delay) {
-  const shouldResolve = Math.random() > 0.3;
   const promise = new Promise((resolve, reject) => {
-    if (shouldResolve) {
-      resolve({ position, delay });
-    } else {
-      reject({ position, delay });
-    }
+    setTimeout(() => {
+      const shouldResolve = Math.random() > 0.3;
+      if (shouldResolve) {
+        resolve({ position, delay });
+      } else {
+        reject({ position, delay });
+      }
+    }, delay);
   });
   return promise;
 }
